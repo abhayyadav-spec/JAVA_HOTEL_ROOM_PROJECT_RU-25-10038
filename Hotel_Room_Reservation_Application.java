@@ -70,7 +70,7 @@ class Hotel {
         }
     }
 }
-public class hotel_room {
+public class Hotel_Room_Reservation_Application{
     public static void main(String[] args) {
         Hotel hotel = new Hotel();
         hotel.displayRooms();
