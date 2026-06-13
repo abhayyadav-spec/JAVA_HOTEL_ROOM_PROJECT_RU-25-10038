@@ -34,24 +34,24 @@ class Hotel {
             if (r.roomNumber == rNo) {
                 if (r.isAvailable) {
                     r.isAvailable = false;
-                    System.out.println("Success: Room " + rNo + " book ho gaya!");
+                    System.out.println("Success: Room " + rNo + " room booked!");
                 } else {
-                    System.out.println("Sorry: Room " + rNo + " pehle se occupied hai.");
+                    System.out.println("Sorry: Room " + rNo + " occupide try another room.");
                 }
                 return;
             }
         }
-        System.out.println("Error: Room number nahi mila.");
+        System.out.println("Error: Room number not found.");
     }
     void cancelRoom(int rNo) {
         for (Room r : rooms) {
             if (r.roomNumber == rNo) {
                 r.isAvailable = true;
-                System.out.println("Success: Room " + rNo + " ki booking cancel ho gayi.");
+                System.out.println("Success: Room " + rNo + " room booking succses full.");
                 return;
             }
         }
-        System.out.println("Error: Room number nahi mila.");
+        System.out.println("Error: Room number not found.");
     }
     void calculateBill(int rNo, int days) {
         for (Room r : rooms) {
