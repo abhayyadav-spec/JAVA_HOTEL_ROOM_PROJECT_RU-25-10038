@@ -1,6 +1,4 @@
-interface Service {
-    double calculateBill(int days, double rate);
-}
+import java.util.Scanner;
 class Room {
     int roomNumber;
     String roomType;
@@ -12,91 +10,77 @@ class Room {
         this.pricePerDay = pricePerDay;
         this.isAvailable = true; 
     }
-    void showRoomDetails() {
-        System.out.println("Room Number: " + roomNumber);
-        System.out.println("Room Type: " + roomType);
-        System.out.println("Price per Day: " + pricePerDay);
-        if (isAvailable) {
-            System.out.println("Status: Available");
-        } else {
-            System.out.println("Status: Occupied");
-        }
-        System.out.println("--------------------------");
+    void showDetails() {
+        String status = isAvailable ? "Available" : "Occupied";
+        System.out.println("Room " + roomNumber + " [" + roomType + "] - ₹" + pricePerDay + "/day - Status: " + status);
     }
 }
-class Hotel implements Service {
-    Room[][] rooms; 
-    Hotel(int totalFloors, int roomsPerFloor) {
-        rooms = new Room[totalFloors][roomsPerFloor];
-        int roomNumber = 101;
-        for (int i = 0; i < totalFloors; i++) {
-            for (int j = 0; j < roomsPerFloor; j++) {
-                String type;
-                double price;
-                if (j == 0) {
-                    type = "Single";
-                    price = 499;
-                } else if (j == 1) {
-                    type = "Double";
-                    price = 1000;
+class Hotel {
+    Room[] rooms = new Room[4]; 
+    Hotel() {
+        rooms[0] = new Room(101, "Single", 500);
+        rooms[1] = new Room(102, "Double", 1000);
+        rooms[2] = new Room(103, "Deluxe", 1500);
+        rooms[3] = new Room(104, "Deluxe", 1500);
+    }
+    void displayRooms() {
+        System.out.println("\n--- HOTEL ROOMS STATUS ---");
+        for (Room r : rooms) {
+            r.showDetails();
+        }
+    }
+    void bookRoom(int rNo) {
+        for (Room r : rooms) {
+            if (r.roomNumber == rNo) {
+                if (r.isAvailable) {
+                    r.isAvailable = false;
+                    System.out.println("Success: Room " + rNo + " book ho gaya!");
                 } else {
-                    type = "Deluxe";
-                    price = 1500;
+                    System.out.println("Sorry: Room " + rNo + " pehle se occupied hai.");
                 }
-
-                rooms[i][j] = new Room(roomNumber, type, price);
-                roomNumber++;
+                return;
             }
         }
+        System.out.println("Error: Room number nahi mila.");
     }
-    void bookRoom(int floor, int roomIndex) {
-        if (rooms[floor][roomIndex].isAvailable == true) {
-            rooms[floor][roomIndex].isAvailable = false;
-            System.out.println("Room booked successfully!");
-        } else {
-            System.out.println("Room is already occupied!");
-        }
-    }
-    void cancelRoom(int floor, int roomIndex) {
-        rooms[floor][roomIndex].isAvailable = true;
-        System.out.println("Booking cancelled!");
-    }
-    public double calculateBill(int days, double rate) {
-        double total = days * rate;
-        double tax = total * 0.10;
-        double serviceCharge = 200;
-        double finalAmount = total + tax + serviceCharge;
-        return finalAmount;
-    }
-    void displayAllRooms() {
-        System.out.println("\n----- ROOM STATUS -----");
-        for (int i = 0; i < rooms.length; i++) {
-            System.out.println("Floor " + (i + 1) + ":");
-            for (int j = 0; j < rooms[i].length; j++) {
-                rooms[i][j].showRoomDetails();
+    void cancelRoom(int rNo) {
+        for (Room r : rooms) {
+            if (r.roomNumber == rNo) {
+                r.isAvailable = true;
+                System.out.println("Success: Room " + rNo + " ki booking cancel ho gayi.");
+                return;
             }
         }
+        System.out.println("Error: Room number nahi mila.");
     }
-    double getPrice(int floor, int roomIndex) {
-        return rooms[floor][roomIndex].pricePerDay;
+    void calculateBill(int rNo, int days) {
+        for (Room r : rooms) {
+            if (r.roomNumber == rNo) {
+                double total = r.pricePerDay * days;
+                double tax = total * 0.10;
+                double serviceCharge = 200;
+                double finalBill = total + tax + serviceCharge;
+                System.out.println("\n--- BILL DETAILS FOR ROOM " + rNo + " ---");
+                System.out.println("Base Price (" + days + " days): ₹" + total);
+                System.out.println("Tax (10%): ₹" + tax);
+                System.out.println("Service Charge: ₹" + serviceCharge);
+                System.out.println("Total Amount to Pay: ₹" + finalBill);
+                return;
+            }
+        }
     }
 }
 public class hotel_room {
     public static void main(String[] args) {
-        Hotel hotel = new Hotel(2, 3);
-        hotel.displayAllRooms();
-        System.out.println("\nBooking Room...");
-        hotel.bookRoom(0, 1);
-        System.out.println("\nBooking Same Room Again...");
-        hotel.bookRoom(0, 1);
-        System.out.println("\nCancelling Booking...");
-        hotel.cancelRoom(0, 1);
-        System.out.println("\nBooking Again...");
-        hotel.bookRoom(0, 1);
-        int days = 3;
-        double rate = hotel.getPrice(0, 1);
-        double bill = hotel.calculateBill(days, rate);
-        System.out.println("\nTotal Bill for " + days + " days = " + bill);
-        hotel.displayAllRooms();
+        Hotel hotel = new Hotel();
+        hotel.displayRooms();
+        System.out.println("\nBooking Room 102...");
+        hotel.bookRoom(102);
+        System.out.println("\nBooking Room 102 Again...");
+        hotel.bookRoom(102);
+        hotel.calculateBill(102, 3);
+        System.out.println("\nCancelling Room 102...");
+        hotel.cancelRoom(102);
+        hotel.displayRooms();
     }
 }
